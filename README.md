@@ -16,21 +16,29 @@ As [Beacon LiveView CMS](https://github.com/BeaconCMS/beacon) is an early potent
 
 ## Allow list
 
-This project is using an allow-list approach. We are parsing the code into AST and allowing
+This project is using an allow-list approach. We are parsing the code into AST and checking if each function call in the AST is allowed. If any function validators return true for a given function, the call passes. If no function validators return true for any given function call, SafeCode raises.
 
 ## Usage
 
-The main entry points are `SafeCode.Validator.validate/1` and `SafeCode.Validator.validate_heex!/1`.
+The main entry points are `SafeCode.Validator.validate/2` and `SafeCode.Validator.validate_heex!/2`. `validate/2` takes straight Elixir code and tests against the `Elixir` `FunctionValidator`, and `validate_heex!/2` takes Phoenix Template code and tests against both `Elixir` and `Phoenix` `FunctionValidator`s.
 
+## Defining additional function validators
+
+Additional function validators can be specified by passing the `extra_function_validators` keyword option like this (supports single validator or list of validators):
+
+```elixir
+SafeCode.Validator.validate_heex!(body, extra_function_validators: MyApp.SafeCodeValidator)
+```
+
+These validator(s) should implement `SafeCode.Validator.FunctionValidators.Behaviour`. As this is an allow-list approach, your implemented functions should return true if the function is valid, false if it cannot be vouched for. SafeCode will move on to other validators until it finds one willing to vouch for the function by returning true. See the Elixir and Phoenix Function Validators in the same folder as the behaviour for examples.
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `safe_code` to your list of dependencies in `mix.exs`:
+Add `safe_code` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:safe_code, "~> 0.1.0"}
+    {:safe_code, "~> 0.2.0"}
   ]
 end
 ```
