@@ -16,6 +16,7 @@ defmodule SafeCode.Validator.FunctionValidators.Elixir do
   def safe_function?(:require), do: true
   def safe_function?(:for), do: true
   def safe_function?(:<-), do: true
+  def safe_function?(:elem), do: true
 
   def safe_function?(_), do: false
 

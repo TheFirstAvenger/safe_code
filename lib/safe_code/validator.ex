@@ -44,7 +44,9 @@ defmodule SafeCode.Validator do
   defp valid_node?({variable, _, scope}, _opts) when is_atom(variable) and is_atom(scope), do: true
   defp valid_node?({{_, _, _}, _, _}, _opts), do: true
   defp valid_node?({:., _, [{:__aliases__, _, module_list}, func]}, opts), do: safe_module_function?(Module.concat(module_list), func, opts)
-  defp valid_node?({:., _, [module, func]}, opts), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:., _, [{{:., _, [{module, _, _}, func]}, _, _}, _]}, opts), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:., _, [{module, _, _}, func]}, opts), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:., _, [module, func]}, opts) when is_atom(module), do: safe_module_function?(module, func, opts)
 
   defp valid_node?({function, _meta, args}, opts) when is_atom(function) and is_list(args) do
     FunctionValidators.safe_function?(function, opts)
