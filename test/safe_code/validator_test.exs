@@ -2,6 +2,7 @@ defmodule SafeCode.ValidatorTest do
   use ExUnit.Case
 
   alias SafeCode.Validator
+  alias SafeCode.Validator.InvalidNode
 
   describe "validate/1" do
     test "add" do
@@ -25,7 +26,7 @@ defmodule SafeCode.ValidatorTest do
       System.cmd("touch", ["foo"])
       """
 
-      assert_raise RuntimeError, "invalid_node:\n\nSystem . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
+      assert_raise InvalidNode, "System . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
         Validator.validate!(str)
       end
     end
@@ -55,7 +56,7 @@ defmodule SafeCode.ValidatorTest do
       <%= System.cmd("touch", ["foo"]) %>
       """
 
-      assert_raise RuntimeError, "invalid_node:\n\nSystem . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
+      assert_raise InvalidNode, "System . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
         Validator.validate_heex!(str)
       end
     end

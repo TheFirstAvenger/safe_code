@@ -3,6 +3,22 @@ defmodule SafeCode.Validator do
   alias SafeCode.Parser
   alias SafeCode.Validator.FunctionValidators
 
+  defmodule InvalidNode do
+    defexception [:message]
+
+    @impl Exception
+    def exception(val) do
+      message = """
+      #{Macro.to_string(val)}
+
+      ast:
+      #{inspect(val)}
+      """
+
+      %InvalidNode{message: String.trim(message)}
+    end
+  end
+
   def validate!(str, opts \\ []) when is_binary(str) do
     str
     |> Parser.parse_string()
@@ -30,7 +46,7 @@ defmodule SafeCode.Validator do
     if valid_node?(val, opts) do
       val
     else
-      raise "invalid_node:\n\n#{Macro.to_string(val)}\n\nast:\n#{inspect(val)}"
+      raise InvalidNode, val
     end
   end
 
