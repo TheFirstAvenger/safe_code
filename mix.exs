@@ -32,7 +32,7 @@ defmodule SafeCode.MixProject do
   defp deps do
     [
       {:mix_test_watch, "~> 1.1.0", env: :dev, runtime: false},
-      {:phoenix_live_view, "~> 0.17.5"},
+      {:phoenix_live_view, "~> 0.18.3"},
       {:jason, "~> 1.3"},
       {:credo, "~> 1.6.1", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
