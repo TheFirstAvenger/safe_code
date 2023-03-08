@@ -6,7 +6,7 @@ defmodule SafeCode.MixProject do
       app: :safe_code,
       description: "Validate if code is safe to load and run",
       version: "0.2.2",
-      elixir: "~> 1.13",
+      elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       source_url: "https://github.com/TheFirstAvenger/safe_code",
       deps: deps(),

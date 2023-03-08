@@ -2,9 +2,9 @@ name: Elixir CI
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
   push:
-    branches: [master]
+    branches: [main]
 env:
   MIX_ENV: test
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -15,8 +15,11 @@ jobs:
     name: Test / OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
     strategy:
       matrix:
-        otp: ["23.3.4.18", 24.3.4.9', "25.3"]
-        elixir: ["1.12.3"]
+        otp: ["24.3", "25.3"]
+        elixir: ["1.12.3", "1.13.4", "1.14.3"]
+        exclude:
+          - elixir: "1.12.3"
+            otp: "25.3"
     steps:
       - uses: actions/checkout@v3
 
@@ -63,8 +66,8 @@ jobs:
         run: mix credo --strict
 
       - name: Run Tests
-        # run: mix test
-        run: mix coveralls.github
+        run: mix test
+        # run: mix coveralls.github
 
       - name: Retrieve PLT Cache
         uses: actions/cache@v3
