@@ -31,6 +31,7 @@ SafeCode.Validator.validate_heex!(body, extra_function_validators: MyApp.SafeCod
 ```
 
 These validator(s) should implement `SafeCode.Validator.FunctionValidators.Behaviour`. As this is an allow-list approach, your implemented functions should return true if the function is valid, false if it cannot be vouched for. SafeCode will move on to other validators until it finds one willing to vouch for the function by returning true. See the Elixir and Phoenix Function Validators in the same folder as the behaviour for examples.
+
 ## Installation
 
 Add `safe_code` to your list of dependencies in `mix.exs`:
@@ -38,7 +39,7 @@ Add `safe_code` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:safe_code, "~> 0.2.0"}
+    {:safe_code, "~> 0.2.2"}
   ]
 end
 ```
@@ -46,4 +47,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/safe_code>.
-

@@ -24,3 +24,5 @@ safe_code-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+/plts/
