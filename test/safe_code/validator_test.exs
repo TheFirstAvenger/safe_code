@@ -61,14 +61,13 @@ defmodule SafeCode.ValidatorTest do
       assert error.description == "end of template reached without closing tag for <div>"
     end
 
-    test "raises on problem function" do
+    test "return an error tuple on problem function" do
       str = """
       <%= System.cmd("touch", ["foo"]) %>
       """
 
-      assert_raise InvalidNode, "System . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
-        Validator.validate_heex(str)
-      end
+      assert {:error, %InvalidNode{} = error} = Validator.validate_heex(str)
+      assert error.message == "System . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}"
     end
   end
 
