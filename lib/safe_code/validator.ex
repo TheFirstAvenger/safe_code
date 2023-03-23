@@ -63,6 +63,23 @@ defmodule SafeCode.Validator do
   defp valid_node?({:., _, [{{:., _, [{module, _, _}, func]}, _, _}, _]}, opts), do: safe_module_function?(module, func, opts)
   defp valid_node?({:., _, [{module, _, _}, func]}, opts), do: safe_module_function?(module, func, opts)
   defp valid_node?({:., _, [module, func]}, opts) when is_atom(module), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:not, _, _}, _opts), do: true
+  defp valid_node?({:||, _, _}, _opts), do: true
+  defp valid_node?({:&&, _, _}, _opts), do: true
+  defp valid_node?({:==, _, _}, _opts), do: true
+  defp valid_node?({:===, _, _}, _opts), do: true
+  defp valid_node?({:!, _, _}, _opts), do: true
+  defp valid_node?({:!=, _, _}, _opts), do: true
+  defp valid_node?({:!==, _, _}, _opts), do: true
+  defp valid_node?({:<, _, _}, _opts), do: true
+  defp valid_node?({:>, _, _}, _opts), do: true
+  defp valid_node?({:>=, _, _}, _opts), do: true
+  defp valid_node?({:<=, _, _}, _opts), do: true
+  defp valid_node?({:or, _, _}, _opts), do: true
+  defp valid_node?({:and, _, _}, _opts), do: true
+  defp valid_node?({:<>, _, _}, _opts), do: true
+  defp valid_node?({:++, _, _}, _opts), do: true
+  defp valid_node?({:--, _, _}, _opts), do: true
 
   defp valid_node?({function, _meta, args}, opts) when is_atom(function) and is_list(args) do
     FunctionValidators.safe_function?(function, opts)
