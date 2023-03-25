@@ -23,7 +23,9 @@ defmodule SafeCode.Validator.FunctionValidators.Elixir do
   def safe_function?(_), do: false
 
   def safe_module_function?(Enum, :map), do: true
+  def safe_module_function?(Enum, :with_index), do: true
   def safe_module_function?(Access, :get), do: true
+  def safe_module_function?(Map, :put), do: true
 
   def safe_module_function?(Kernel, fun), do: safe_function?(fun)
   def safe_module_function?(_, _), do: false
