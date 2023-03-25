@@ -41,6 +41,142 @@ defmodule SafeCode.ValidatorTest do
       assert Validator.validate_heex!(heex)
     end
 
+    test "accepts the 'not' expression" do
+      heex = """
+      hello <%= not false %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '||' expression" do
+      heex = """
+      hello <%= nil || true %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '&&' expression" do
+      heex = """
+      hello <%= 1 && true %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '!' expression" do
+      heex = """
+      hello <%= !false %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '==' expression" do
+      heex = """
+      hello <%= 1 == 1 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '===' expression" do
+      heex = """
+      hello <%= 1 === 1 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '!==' expression" do
+      heex = """
+      hello <%= 1 !== 2 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '!=' expression" do
+      heex = """
+      hello <%= 1 != 2 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '<' expression" do
+      heex = """
+      hello <%= 1 < 5 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '>' expression" do
+      heex = """
+      hello <%= 1 > 5 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '>=' expression" do
+      heex = """
+      hello <%= 5 >= 1 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '<=' expression" do
+      heex = """
+      hello <%= 1 <= 5 %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the 'or' expression" do
+      heex = """
+      hello <%= false or true %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the 'and' expression" do
+      heex = """
+      hello <%= true and true %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '<>' expression" do
+      heex = """
+      hello <%= "Steve" <> "Rogers" %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '++' expression" do
+      heex = """
+      hello <%= [1,2] ++ [3,4] %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
+    test "accepts the '--' expression" do
+      heex = """
+      hello <%= [1,2,3] -- [2] %> how are you
+      """
+
+      assert Validator.validate_heex!(heex)
+    end
+
     test "for loop" do
       heex = """
       <%= for foo <- bar do %>
