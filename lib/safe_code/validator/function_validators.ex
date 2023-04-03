@@ -1,8 +1,9 @@
 defmodule SafeCode.Validator.FunctionValidators do
   require Logger
 
-  def safe_function?(function, opts) do
-    Logger.debug("safe_function?(#{inspect(function)}, #{inspect(opts)})")
+  def safe_function?(function, opts) when is_atom(function) do
+    Logger.debug("safe_function?(#{inspect(function)})")
+    Process.put(:safe_code_last_check, "safe_function?(#{inspect(function)})")
 
     [SafeCode.Validator.FunctionValidators.Elixir | extra_function_validators(opts)]
     |> Enum.reduce_while(false, fn module, _ ->
@@ -14,8 +15,9 @@ defmodule SafeCode.Validator.FunctionValidators do
     end)
   end
 
-  def safe_module_function?(module, function, opts) do
-    Logger.debug("safe_module_function?(#{inspect(module)}, #{inspect(function)}, #{inspect(opts)})")
+  def safe_module_function?(module, function, opts) when (is_atom(module) or is_binary(module)) and is_atom(function) do
+    Logger.debug("safe_module_function?(#{inspect(module)}, #{inspect(function)})")
+    Process.put(:safe_code_last_check, "safe_module_function?(#{inspect(module)}, #{inspect(function)})")
 
     [SafeCode.Validator.FunctionValidators.Elixir | extra_function_validators(opts)]
     |> Enum.reduce_while(false, fn validator_module, _ ->
