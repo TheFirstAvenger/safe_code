@@ -3,13 +3,15 @@ defmodule SafeCode.Validator do
   alias SafeCode.Parser
   alias SafeCode.Validator.FunctionValidators
 
+  require Logger
+
   defmodule InvalidNode do
     defexception [:message]
 
     @impl Exception
-    def exception(val) do
+    def exception({val, last_check}) do
       message = """
-      #{Macro.to_string(val)}
+      No validator approved #{last_check}
 
       ast:
       #{inspect(val)}
@@ -43,10 +45,14 @@ defmodule SafeCode.Validator do
   end
 
   defp validate_node(val, opts) do
+    Logger.debug("validate_node?(#{inspect(val)})")
+
+    Process.put(:safe_code_last_check, "validate_node?(#{inspect(val)})")
+
     if valid_node?(val, opts) do
       val
     else
-      raise InvalidNode, val
+      raise InvalidNode, {val, Process.get(:safe_code_last_check)}
     end
   end
 
@@ -60,9 +66,17 @@ defmodule SafeCode.Validator do
   defp valid_node?({variable, _, scope}, _opts) when is_atom(variable) and is_atom(scope), do: true
   defp valid_node?({{_, _, _}, _, _}, _opts), do: true
   defp valid_node?({:., _, [{:__aliases__, _, module_list}, func]}, opts), do: safe_module_function?(Module.concat(module_list), func, opts)
+  defp valid_node?({:., _, [{{:., _, [{:__aliases__, _, module_list}, func]}, _, _}, _]}, opts), do: safe_module_function?(Module.concat(module_list), func, opts)
   defp valid_node?({:., _, [{{:., _, [{module, _, _}, func]}, _, _}, _]}, opts), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:., _, [{:__ENV__, _, module}, func]}, opts) when is_atom(module), do: safe_module_function?(module, func, opts)
   defp valid_node?({:., _, [{module, _, _}, func]}, opts), do: safe_module_function?(module, func, opts)
   defp valid_node?({:., _, [module, func]}, opts) when is_atom(module), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:&, _, [{:/, _, [{func, _, module}, _]}]}, opts) when is_atom(module), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:/, _, [{func, _, module}, _]}, opts) when is_atom(module), do: safe_module_function?(module, func, opts)
+  defp valid_node?({:<<>>, _, _}, _opts), do: true
+  defp valid_node?({:"::", _, _}, _opts), do: true
+  defp valid_node?({:<>, _, _}, _opts), do: true
+  defp valid_node?({:{}, _, _}, _opts), do: true
 
   defp valid_node?({function, _meta, args}, opts) when is_atom(function) and is_list(args) do
     FunctionValidators.safe_function?(function, opts)
@@ -70,5 +84,13 @@ defmodule SafeCode.Validator do
 
   defp valid_node?(_, _opts), do: false
 
+  defp safe_module_function?({:., _, [{module, _, _}, function1]}, function2, opts) do
+    safe_module_function?(module, function1, opts) and safe_module_function?(Enum.join([to_module(module), function1], "."), function2, opts)
+  end
+
   defp safe_module_function?(module, function, opts), do: FunctionValidators.safe_module_function?(module, function, opts)
+
+  defp to_module({:., _, [{:__aliases__, _, module_list}, function]}), do: Enum.join([Module.concat(module_list), function], ".")
+  defp to_module({:., _, [{module, _, _}, function]}), do: Enum.join([to_module(module), function], ".")
+  defp to_module(module) when is_atom(module), do: module
 end
