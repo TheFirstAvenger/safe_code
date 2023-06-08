@@ -26,7 +26,7 @@ defmodule SafeCode.ValidatorTest do
       System.cmd("touch", ["foo"])
       """
 
-      assert_raise InvalidNode, "System . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
+      assert_raise InvalidNode, "No validator approved safe_module_function?(System, :cmd)\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
         Validator.validate!(str)
       end
     end
@@ -56,7 +56,7 @@ defmodule SafeCode.ValidatorTest do
       <%= System.cmd("touch", ["foo"]) %>
       """
 
-      assert_raise InvalidNode, "System . :cmd\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
+      assert_raise InvalidNode, "No validator approved safe_module_function?(System, :cmd)\n\nast:\n{:., [line: 1], [{:__aliases__, [line: 1], [:System]}, :cmd]}", fn ->
         Validator.validate_heex!(str)
       end
     end
