@@ -37,7 +37,7 @@ defmodule SafeCode.MixProject do
   defp deps do
     [
       {:mix_test_watch, "~> 1.1.0", env: :dev, runtime: false},
-      {:phoenix_live_view, "~> 0.18.17 or ~> 0.19"},
+      {:phoenix_live_view, ">= 0.18.17"},
       {:jason, "~> 1.3"},
       {:credo, "~> 1.6.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.2.0", only: [:dev, :test], runtime: false},
