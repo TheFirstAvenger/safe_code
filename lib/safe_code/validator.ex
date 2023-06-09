@@ -27,6 +27,18 @@ defmodule SafeCode.Validator do
     |> validate_quoted(opts)
   end
 
+  @spec validate_heex(binary, keyword) :: {:ok, ast :: Macro.t()} | {:error, Exception.t()}
+  def validate_heex(heex, opts \\ []) when is_binary(heex) do
+    quoted =
+      heex
+      |> HeexParser.parse_template()
+      |> validate_quoted(include_phoenix(opts))
+
+    {:ok, quoted}
+  rescue
+    error -> {:error, error}
+  end
+
   def validate_heex!(heex, opts \\ []) when is_binary(heex) do
     heex
     |> HeexParser.parse_template()
