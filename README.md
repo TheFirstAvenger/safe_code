@@ -39,7 +39,7 @@ Add `safe_code` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:safe_code, "~> 0.2.2"}
+    {:safe_code, "~> 0.2.3"}
   ]
 end
 ```
